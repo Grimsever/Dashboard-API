@@ -1,0 +1,22 @@
+FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
+ARG BUILD_ID
+LABEL stage=intermediate-${BUILD_ID}
+
+WORKDIR /source
+
+# copy csproj and restore as distinct layers
+COPY SalaryDashboard.WebAPI/*.csproj .
+RUN dotnet restore communication-api.csproj
+COPY .editorconfig .
+COPY SalaryDashboard.WebAPI/ .
+
+RUN dotnet build -c Release -o /app
+
+# copy and publish app and libraries
+RUN dotnet publish -c Release -o /app -r linux-x64
+
+# final stage/image
+FROM mcr.microsoft.com/dotnet/runtime:3.1
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "salary-dashboard-api.dll"]

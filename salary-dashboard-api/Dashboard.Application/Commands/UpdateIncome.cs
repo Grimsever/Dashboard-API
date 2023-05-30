@@ -1,0 +1,11 @@
+﻿using System;
+using Dashboard.Domain.Constants;
+using Dashboard.Domain.Entities;
+using Dashboard.Shared.Commands;
+
+namespace Dashboard.Application.Commands
+{
+    public record UpdateIncome(Guid UserId, Guid IncomeListId, Guid IncomeId, decimal IncomeAmount, int PercentSalary,
+        DateTime IncomedAt,
+        double CurrencyRate, IncomeType IncomeType, Currency CurrencyType) : ICommand<IncomeList>;
+}
